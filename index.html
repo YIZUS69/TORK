@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="es" data-type="software">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="page-type" content="software"><meta name="site-kind" content="software">
+<title>tork — Software a medida para operaciones reales</title>
+<link rel="icon" type="image/png" href="logo_tork.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--bg:#0b0d0c;--surface:#121513;--surface2:#171b18;--surface3:#1d2320;--line:#242b26;--text:#eef1ee;--muted:#8f9a92;--accent:#8ad65f;--accent2:#e9ffd9;--warn:#f2b04a;--bad:#e8705b;
+--ease-out:cubic-bezier(.23,1,.32,1);--ease-io:cubic-bezier(.77,0,.175,1);--r:14px;
+--sans:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;--mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font:400 16px/1.55 var(--sans);-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:30}
+.wrap{max-width:1200px;margin:0 auto;padding:0 clamp(20px,4vw,40px)}
+a{color:inherit;text-decoration:none}
+section{padding:clamp(64px,10vw,120px) 0}
+h2{font-weight:800;font-size:clamp(28px,3.6vw,44px);letter-spacing:-.03em;line-height:1.08;margin:0 0 12px}
+.lede{color:var(--muted);font-size:clamp(15px,1.3vw,17px);max-width:560px;margin:0 0 48px}
+.tag{font:600 11px var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:8px;margin:0 0 14px}
+.tag i{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+/* reveal */
+.rv{opacity:0;transform:translateY(16px);transition:opacity 620ms var(--ease-out),transform 620ms var(--ease-out)}
+.rv.on{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.rv{transition:opacity 200ms ease;transform:none}}
+/* header */
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:rgba(11,13,12,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:64px;gap:16px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.14em;font-size:15px}
+nav{position:relative;display:flex;gap:0}
+nav a{position:relative;z-index:1;width:112px;text-align:center;padding:7px 0;font-size:13px;font-weight:500;color:var(--muted);transition:color 160ms ease}
+nav a:hover{color:var(--text)}
+.pill{position:absolute;left:0;top:0;width:112px;height:100%;border-radius:999px;background:var(--surface2);border:1px solid var(--line);transform-origin:left center;opacity:0;transition:transform 260ms var(--ease-io),opacity 160ms ease}
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 20px;border-radius:999px;font:700 14px var(--sans);border:1px solid var(--line);color:var(--text);background:transparent;cursor:pointer;transition:transform 160ms var(--ease-out),background-color 160ms ease,border-color 160ms ease,opacity 160ms ease}
+.btn.p{background:var(--accent);border-color:var(--accent);color:#0b1507}
+.btn:active{transform:scale(.97)}
+.btn.sm{height:36px;padding:0 16px;font-size:13px}
+.btn[disabled]{opacity:.4;cursor:not-allowed}
+@media (hover:hover) and (pointer:fine){.btn:not([disabled]):hover{transform:translateY(-2px)}.btn.p:not([disabled]):hover{background:#a2e77c}.btn:not(.p):not([disabled]):hover{border-color:#3a443d;background:var(--surface)}}
+/* hero */
+.hero{min-height:calc(100svh - 64px);display:flex;align-items:center;padding:40px 0}
+.grid{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(32px,5vw,72px);align-items:center;width:100%}
+.eyebrow{font:500 12px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:8px;margin:0 0 20px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:blink 2.8s ease-in-out infinite}
+h1{font-weight:800;font-size:clamp(34px,5.2vw,64px);line-height:1.04;letter-spacing:-.03em;margin:0 0 20px}
+h1 em{font-style:normal;color:var(--accent)}
+.sub{color:var(--muted);font-size:clamp(16px,1.5vw,18px);max-width:520px;margin:0 0 32px}
+.ctas{display:flex;gap:12px;flex-wrap:wrap}
+.facts{display:flex;gap:28px;margin:40px 0 0;padding:24px 0 0;border-top:1px solid var(--line);font:400 13px var(--mono);color:var(--muted)}
+.facts b{display:block;font:800 22px var(--sans);color:var(--text);letter-spacing:-.02em}
+.in>*{opacity:0;transform:translateY(8px);animation:up 420ms var(--ease-out) forwards}
+.in>*:nth-child(2){animation-delay:50ms}.in>*:nth-child(3){animation-delay:100ms}.in>*:nth-child(4){animation-delay:150ms}.in>*:nth-child(5){animation-delay:200ms}
+@keyframes up{to{opacity:1;transform:none}}
+@keyframes blink{50%{opacity:.35}}
+.stage{display:flex;flex-direction:column;gap:16px;align-items:center;min-width:0}
+.logo-big{width:min(190px,34vw);cursor:pointer}
+.frame{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;transition:transform 200ms var(--ease-out)}
+.bar{display:flex;align-items:center;gap:6px;padding:11px 14px;border-bottom:1px solid var(--line);font:400 12px var(--mono);color:var(--muted)}
+.bar i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.bar span{margin-left:8px}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border-bottom:1px solid var(--line)}
+.kpi{background:var(--surface);padding:14px}
+.kpi small{display:block;font:400 11px var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.kpi b{font:800 24px var(--sans);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.rows{padding:6px 14px 14px}
+.row{display:grid;grid-template-columns:1fr auto;gap:4px 12px;padding:11px 0;border-bottom:1px solid var(--line);font-size:14px}
+.row:last-child{border:0}
+.row .q{font:500 14px var(--mono);font-variant-numeric:tabular-nums;text-align:right;transition:color 200ms ease}
+.track{grid-column:1/-1;height:4px;border-radius:2px;background:var(--surface2);overflow:hidden}
+.fill{height:100%;width:100%;background:var(--accent);transform-origin:left;transform:scaleX(.5);transition:transform 600ms var(--ease-out),background-color 200ms ease}
+.row.low .fill{background:var(--warn)}.row.low .q{color:var(--warn)}
+.alert{display:flex;align-items:center;gap:8px;margin:0 14px 14px;padding:10px 12px;border-radius:8px;background:var(--surface2);font:400 12px var(--mono);color:var(--muted)}
+/* logo */
+.logo{display:block;overflow:visible}
+.logo .d{fill:none;stroke:var(--accent);stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.15s var(--ease-io) forwards;animation-delay:var(--t,0s)}
+.logo .s{stroke-width:7;animation-duration:.45s}
+.logo .hl{fill:none;stroke:#e9ffd9;stroke-width:15;stroke-linecap:round;stroke-dasharray:.07 .93;opacity:0;pointer-events:none}
+.logo .nd{fill:var(--accent);opacity:0}
+@keyframes draw{to{stroke-dashoffset:0}}
+.logo.alive .pad{transform-box:fill-box;transform-origin:50% 100%;animation:breathe 5.5s ease-in-out infinite}
+.logo.alive .pad2{animation-delay:-2.2s}
+.logo.alive .nd{animation:node 3.2s ease-in-out infinite;animation-delay:var(--n)}
+@keyframes breathe{50%{transform:scale(1.014)}}
+@keyframes node{0%,100%{opacity:.15}50%{opacity:1}}
+.logo.ping .s{transform-box:fill-box;transform-origin:center;animation:pingS 520ms var(--ease-out)}
+@keyframes pingS{40%{transform:scale(1.6)}}
+@keyframes sweep{from{stroke-dashoffset:0}to{stroke-dashoffset:-1}}
+@media (hover:hover) and (pointer:fine){.logo.alive:hover .hl{opacity:.55;animation:sweep 1.4s linear infinite;transition:opacity 160ms ease}}
+.logo-small{width:26px;height:auto}
+/* marquee */
+.marquee{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:18px 0;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.mtrack{display:flex;width:max-content;animation:mscroll 38s linear infinite}
+.mtrack span{display:flex;align-items:center;gap:10px;padding:0 28px;font:500 14px var(--mono);color:var(--muted);white-space:nowrap}
+.mtrack span b{color:var(--text);font-weight:600}
+.mi{flex:none;color:var(--accent)}
+@keyframes mscroll{to{transform:translateX(-50%)}}
+.marquee:hover .mtrack{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.mtrack{animation:none;flex-wrap:wrap;width:auto}}
+/* bento */
+.bento{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.bento .card.wide{grid-column:1/-1}
+.card{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:28px;overflow:hidden;transition:transform 220ms var(--ease-out),border-color 220ms ease,box-shadow 220ms ease}
+@media (hover:hover) and (pointer:fine){.card:hover{transform:translateY(-3px);border-color:#374038;box-shadow:0 0 0 1px rgba(138,214,95,.15),0 16px 40px -20px rgba(0,0,0,.6)}}
+.card h3{font-size:19px;font-weight:700;letter-spacing:-.01em;margin:0 0 6px}
+.card p{color:var(--muted);font-size:14px;margin:0 0 20px;max-width:46ch}
+.cdemo{background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:16px;font:400 13px var(--mono)}
+/* card1 inventory */
+.wh-sel{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.wh-sel button{font:500 12px var(--sans);padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer;transition:all 160ms ease}
+.wh-sel button.on{background:var(--accent);color:#0b1507;border-color:var(--accent)}
+.stock-row{display:grid;grid-template-columns:80px 1fr 34px;gap:10px;align-items:center;padding:7px 0;font-family:var(--sans);font-size:13px}
+.stock-row .lbl{color:var(--muted)}
+.sbar{height:7px;border-radius:4px;background:var(--surface3);overflow:hidden}
+.sbar i{display:block;height:100%;border-radius:4px;background:var(--accent);transform-origin:left;transition:transform 700ms var(--ease-out),background-color 200ms ease}
+.stock-row.low i{background:var(--warn)}
+.stock-row .n{text-align:right;font-variant-numeric:tabular-nums}
+/* card2 pos */
+.ticket{font-family:var(--mono);font-size:12.5px}
+.tline{display:flex;justify-content:space-between;padding:4px 0;opacity:0;transform:translateY(4px);animation:tin 300ms var(--ease-out) forwards}
+.ttot{display:flex;justify-content:space-between;margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);font-weight:700;color:var(--accent)}
+@keyframes tin{to{opacity:1;transform:none}}
+.cuadre{display:flex;align-items:center;gap:6px;margin-top:10px;font-size:11px;color:var(--muted)}
+.chk{width:14px;height:14px;border-radius:50%;border:1.5px solid var(--accent);display:flex;align-items:center;justify-content:center;flex:none}
+.chk svg{width:8px;height:8px;opacity:0;transform:scale(.6);transition:all 260ms var(--ease-out)}
+.chk.on svg{opacity:1;transform:scale(1)}
+/* card3 restaurant */
+.tables{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:14px}
+.tbl{aspect-ratio:1;border-radius:7px;background:var(--surface3);border:1px solid var(--line);transition:background-color 400ms ease}
+.tbl.busy{background:rgba(242,176,74,.22);border-color:var(--warn)}
+.tbl.free{background:rgba(138,214,95,.18);border-color:var(--accent)}
+.ord{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--line);font-family:var(--sans);font-size:13px}
+.ord:last-child{border:0}
+.badge{font:600 10px var(--mono);padding:3px 8px;border-radius:999px;background:var(--surface3);color:var(--warn);text-transform:uppercase;letter-spacing:.04em;transition:all 260ms var(--ease-out)}
+.badge.ready{background:rgba(138,214,95,.18);color:var(--accent)}
+/* card4 flow */
+.flow{display:flex;align-items:center;justify-content:space-between;padding:8px 0}
+.node{display:flex;flex-direction:column;align-items:center;gap:8px;font-family:var(--sans);font-size:11px;color:var(--muted);flex:none}
+.node i{width:40px;height:40px;border-radius:10px;background:var(--surface3);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--muted);transition:border-color 260ms ease,background-color 260ms ease,color 260ms ease}
+.node i svg{width:18px;height:18px}
+.node.hit i{border-color:var(--accent);background:rgba(138,214,95,.15);color:var(--accent)}
+.wire{flex:1;height:2px;position:relative;background:var(--line);margin:0 4px 22px;overflow:visible}
+.wire b{position:absolute;top:50%;left:0;width:8px;height:8px;margin-top:-4px;border-radius:50%;background:var(--accent);transform:translateX(-50%);opacity:0;box-shadow:0 0 10px 2px rgba(138,214,95,.6)}
+/* card5 hardware/scan */
+.scan-row{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.scan-in{flex:1;min-width:160px;height:40px;background:var(--surface3);border:1px solid var(--line);border-radius:8px;padding:0 12px;color:var(--text);font:500 13px var(--mono);outline:none;transition:border-color 160ms ease}
+.scan-in:focus{border-color:var(--accent)}
+.scan-btn{height:40px;padding:0 16px;border-radius:8px;border:1px solid var(--accent);background:rgba(138,214,95,.12);color:var(--accent);font:700 13px var(--sans);cursor:pointer;transition:transform 160ms var(--ease-out),background-color 160ms ease}
+@media (hover:hover) and (pointer:fine){.scan-btn:hover{background:rgba(138,214,95,.22)}}
+.scan-btn:active{transform:scale(.97)}
+.scan-fx{position:relative;height:3px;border-radius:2px;background:var(--surface3);margin-bottom:14px;overflow:hidden}
+.scan-fx i{position:absolute;inset:0;width:30%;background:linear-gradient(90deg,transparent,var(--accent),transparent);transform:translateX(-120%);opacity:0}
+.scan-fx.go i{opacity:1;animation:scansweep 650ms var(--ease-io)}
+@keyframes scansweep{to{transform:translateX(420%)}}
+.cart{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px;min-height:30px}
+.cart li{display:flex;justify-content:space-between;font-family:var(--sans);font-size:13px;opacity:0;transform:translateY(5px);animation:tin 260ms var(--ease-out) forwards}
+.cart .ph{color:var(--muted);opacity:1;transform:none;animation:none;font-family:var(--mono);font-size:12.5px}
+.beep{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent);margin-right:6px;opacity:0;vertical-align:middle;box-shadow:0 0 8px 2px rgba(138,214,95,.7)}
+.beep.on{animation:beepflash 420ms var(--ease-out)}
+@keyframes beepflash{0%{opacity:1;transform:scale(1.4)}100%{opacity:0;transform:scale(1)}}
+/* flujo unico */
+.custom{background:linear-gradient(135deg,rgba(138,214,95,.10),transparent 55%),var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:clamp(28px,5vw,52px);text-align:center}
+.custom h2{max-width:780px;margin-left:auto;margin-right:auto}
+.custom .ind{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:28px}
+.custom .ind span{font:500 13px var(--mono);padding:9px 16px;border-radius:999px;border:1px solid var(--line);background:var(--surface2);color:var(--muted)}
+/* antes/despues */
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.vs .c{border-radius:var(--r);padding:28px;border:1px solid var(--line)}
+.vs .bad{background:var(--surface);}
+.vs .good{background:linear-gradient(180deg,rgba(138,214,95,.08),transparent 60%),var(--surface)}
+.vs h4{margin:0 0 16px;font-size:13px;font:700 12px var(--mono);letter-spacing:.06em;text-transform:uppercase}
+.vs .bad h4{color:var(--bad)}.vs .good h4{color:var(--accent)}
+.vs ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.vs li{display:flex;gap:10px;font-size:14.5px;color:var(--muted);line-height:1.4}
+.vs li::before{content:'';width:7px;height:7px;border-radius:50%;flex:none;margin-top:7px}
+.vs .bad li::before{background:var(--bad)}.vs .good li::before{background:var(--accent)}
+.vs .good li{color:var(--text)}
+@media (max-width:760px){.vs{grid-template-columns:1fr}}
+/* process */
+.steps{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.steps::before{content:'';position:absolute;top:27px;left:28px;right:28px;height:1px;background:var(--line)}
+.step{position:relative;z-index:1}
+.step .n{width:56px;height:56px;border-radius:50%;background:var(--surface);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font:800 18px var(--mono);color:var(--accent);margin-bottom:20px;transition:border-color 260ms ease,transform 260ms var(--ease-out)}
+.step.on .n{border-color:var(--accent);transform:scale(1.06)}
+.step h4{font-size:16px;font-weight:700;margin:0 0 8px;letter-spacing:-.01em}
+.step p{color:var(--muted);font-size:13.5px;margin:0}
+@media (max-width:860px){.steps{grid-template-columns:1fr 1fr}.steps::before{display:none}}
+/* cotizador */
+.quote{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:clamp(24px,4vw,40px);display:grid;grid-template-columns:1.1fr .9fr;gap:40px}
+.qg{margin-bottom:28px}
+.qg:last-child{margin-bottom:0}
+.qg b{display:block;font:700 12px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font:500 13px var(--sans);padding:9px 16px;border-radius:999px;border:1px solid var(--line);background:var(--surface2);color:var(--muted);cursor:pointer;transition:all 160ms var(--ease-out)}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#0b1507}
+@media (hover:hover) and (pointer:fine){.chip:not(.on):hover{border-color:#3a443d;color:var(--text);transform:translateY(-1px)}}
+.summary{background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:22px;display:flex;flex-direction:column;height:100%}
+.summary b{font:700 12px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+#slist{list-style:none;margin:14px 0 0;padding:0;display:flex;flex-direction:column;gap:9px;flex:1;min-height:90px}
+#slist li{font-size:13.5px;display:flex;gap:8px;opacity:0;transform:translateY(6px);animation:tin 260ms var(--ease-out) forwards}
+#slist li::before{content:'✓';color:var(--accent);font-weight:700}
+#slist .ph{color:var(--muted);opacity:1;transform:none;animation:none}
+#slist .ph::before{content:'';}
+.summary .btn{margin-top:18px;width:100%}
+@media (max-width:860px){.quote{grid-template-columns:1fr}}
+/* footer */
+footer{border-top:1px solid var(--line);padding:48px 0 40px}
+.fgrid{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap;margin-bottom:28px}
+.fbrand{display:flex;align-items:center;gap:10px;font:800 15px var(--sans);letter-spacing:.14em}
+.flinks{display:flex;gap:10px;flex-wrap:wrap}
+.status{display:flex;align-items:center;gap:8px;font:400 12px var(--mono);color:var(--muted)}
+.status .dot{background:var(--accent)}
+.fbottom{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-top:20px;border-top:1px solid var(--line);font:400 12px var(--mono);color:var(--muted)}
+@media (max-width:900px){nav{display:none}.grid{grid-template-columns:1fr}.hero{padding:32px 0 48px}.ctas .btn{width:100%}.logo-big{width:120px}.facts{gap:20px;flex-wrap:wrap}
+.bento{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){
+.in>*{animation:none;opacity:1;transform:none}
+.logo .d{animation-duration:.01s;animation-delay:0s}.logo.alive .pad,.logo.alive .nd,.dot{animation:none}.logo .nd{opacity:.8}
+.fill,.btn,.sbar i,.card{transition-duration:.01s}.tline{animation:none;opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <a class="brand" href="#" aria-label="tork, inicio"><span id="logo-s"></span>TORK</a>
+  <nav id="nav"><span class="pill" id="pill"></span>
+    <a href="#capacidades">Capacidades</a><a href="#transformacion">Transformación</a><a href="#proceso">Proceso</a><a href="#cotizador">Cotizador</a></nav>
+  <div style="display:flex;gap:8px;align-items:center;">
+    <a class="btn sm" href="http://127.0.0.1:8080" target="_blank" style="border-color:var(--accent);color:var(--accent);font-family:var(--mono);">⚡ Abrir Sistema</a>
+    <a class="btn p sm" href="https://wa.me/584126446562?text=Hola%20tork,%20quiero%20cotizar%20un%20sistema%20a%20medida" target="_blank" rel="noopener">Hablar con un ingeniero</a>
+  </div>
+</div></header>
+
+<main>
+<section class="hero"><div class="wrap grid">
+  <div class="in">
+    <p class="eyebrow"><span class="dot"></span>Software a medida · Automatización</p>
+    <h1>Operaciones caóticas, convertidas en <em>software a medida</em>.</h1>
+    <p class="sub">Inventarios, facturación, restaurantes y automatizaciones. Sistemas rápidos de usar, que tu equipo adopta en días y no se rompen cuando el negocio crece.</p>
+    <div class="ctas">
+      <a class="btn p" href="https://wa.me/584126446562?text=Hola%20tork,%20quiero%20cotizar%20un%20sistema%20a%20medida" target="_blank" rel="noopener">Agendar llamada</a>
+      <a class="btn" href="#capacidades">Ver demos interactivas</a>
+      <a class="btn" href="http://127.0.0.1:8080" target="_blank" style="border-color:#3a443d"><span class="dot"></span>Entrar al Sistema TORK</a>
+    </div>
+    <div class="facts"><div><b>4 pasos</b>del dolor al sistema</div><div><b>Tiempo real</b>stock y caja</div><div><b>1 equipo</b>de punta a punta</div></div>
+  </div>
+  <div class="stage">
+    <div class="logo-big" id="logo-b"></div>
+    <div class="frame">
+      <div class="bar"><i></i><i></i><i></i><span>tork / core · Monitoreo en tiempo real</span></div>
+      <div class="kpis">
+        <div class="kpi"><small>Piezas</small><b id="k1">0</b></div>
+        <div class="kpi"><small>Alertas</small><b id="k2">0</b></div>
+        <div class="kpi"><small>Movimientos</small><b id="k3">0</b></div>
+      </div>
+      <div class="rows" id="rows"></div>
+      <div class="alert"><span class="dot"></span><span id="amsg">Todo sobre el mínimo</span></div>
+    </div>
+  </div>
+</div></section>
+
+<div class="marquee" aria-label="Integraciones y soluciones de tork">
+  <div class="mtrack" id="mtrack"></div>
+</div>
+
+<section id="capacidades"><div class="wrap">
+  <p class="tag rv"><i></i>Capacidades</p>
+  <h2 class="rv">Un sistema para cada operación.</h2>
+  <p class="lede rv">Cuatro frentes donde reemplazamos hojas de cálculo y procesos manuales por software que tu equipo realmente usa.</p>
+  <div class="bento">
+    <div class="card rv">
+      <h3>Inventario y Stock a Medida</h3>
+      <p>Control multi-almacén, trazabilidad por pieza y alertas de reposición antes de que falte producto.</p>
+      <div class="cdemo">
+        <div class="wh-sel" id="whsel"></div>
+        <div id="stocklist"></div>
+      </div>
+    </div>
+    <div class="card rv">
+      <h3>Punto de Venta, Facturación y Caja</h3>
+      <p>Tickets generados al instante y cuadre de caja diario automático, sin cuadernos ni planillas.</p>
+      <div class="cdemo ticket" id="ticket"></div>
+    </div>
+    <div class="card rv">
+      <h3>Software para Restaurantes y Comercios</h3>
+      <p>Comandas en vivo de cocina a mesa y estado de mesas visible para todo el equipo.</p>
+      <div class="cdemo">
+        <div class="tables" id="tables"></div>
+        <div id="orders"></div>
+      </div>
+    </div>
+    <div class="card rv">
+      <h3>Automatizaciones y WhatsApp</h3>
+      <p>Pedidos, pagos y alertas disparan flujos automáticos conectados a WhatsApp y tus APIs.</p>
+      <div class="cdemo">
+        <div class="flow" id="flow"></div>
+      </div>
+    </div>
+    <div class="card wide rv">
+      <h3>Hardware &amp; Puntos de Venta Físicos</h3>
+      <p>Software que se conecta con tus lectores de barras, gavetas de dinero e impresoras de tickets sin configuraciones complicadas.</p>
+      <div class="cdemo">
+        <div class="scan-row">
+          <input class="scan-in" id="scanIn" value="128-847203-XK" aria-label="Código a escanear">
+          <button class="scan-btn" id="scanBtn">Simular Escaneo <span class="beep" id="beep"></span></button>
+        </div>
+        <div class="scan-fx" id="scanFx"><i></i></div>
+        <ul class="cart" id="cart"><li class="ph">Carrito vacío — escanea un producto</li></ul>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<section id="transformacion"><div class="wrap">
+  <p class="tag rv"><i></i>Transformación</p>
+  <h2 class="rv">De la fricción al control.</h2>
+  <p class="lede rv">El mismo negocio, dos formas muy distintas de operarlo.</p>
+  <div class="vs">
+    <div class="c bad rv"><h4>Antes</h4><ul>
+      <li>Hojas de Excel infinitas que se corrompen o se pierden.</li>
+      <li>Pérdidas de inventario que nadie detecta a tiempo.</li>
+      <li>Errores en el cuadre de caja al final del día.</li>
+      <li>Tareas manuales repetidas entre varias personas.</li>
+    </ul></div>
+    <div class="c good rv"><h4>Con tork</h4><ul>
+      <li>Un solo sistema en la nube, siempre actualizado.</li>
+      <li>Trazabilidad total: cada movimiento queda registrado.</li>
+      <li>Caja y facturación cuadradas automáticamente.</li>
+      <li>Diseñado con las reglas exactas de tu negocio.</li>
+    </ul></div>
+  </div>
+</div></section>
+
+<section id="proceso"><div class="wrap">
+  <p class="tag rv"><i></i>Cómo trabajamos</p>
+  <h2 class="rv">Un proceso sin fricción.</h2>
+  <p class="lede rv">Cuatro pasos, del diagnóstico al software corriendo en producción.</p>
+  <div class="steps">
+    <div class="step rv"><div class="n">01</div><h4>Diagnóstico de Operaciones</h4><p>Entendemos tu flujo real de trabajo, sin suposiciones.</p></div>
+    <div class="step rv"><div class="n">02</div><h4>Prototipo Interactivo</h4><p>Pruebas la interfaz antes de escribir el código final.</p></div>
+    <div class="step rv"><div class="n">03</div><h4>Desarrollo &amp; Despliegue</h4><p>Software a medida, sin código innecesario ni lentitud.</p></div>
+    <div class="step rv"><div class="n">04</div><h4>Acompañamiento &amp; Soporte</h4><p>Tu sistema evoluciona al ritmo de tu empresa.</p></div>
+  </div>
+</div></section>
+
+<section id="a-medida"><div class="wrap">
+  <div class="custom rv">
+    <p class="tag" style="justify-content:center"><i></i>Sin límites técnicos</p>
+    <h2>No adaptamos tu negocio a un software genérico.<br>Creamos el software para las reglas exactas de tu negocio.</h2>
+    <p class="lede" style="margin:12px auto 0;text-align:center">¿Tienes un flujo único? Lo construimos a medida — sin importar qué tan específico o complejo sea.</p>
+    <div class="ind">
+      <span>Tiendas de repuestos</span><span>Ferreterías</span><span>Distribuidoras</span><span>Supermercados</span>
+      <span>Servicios técnicos</span><span>Talleres</span><span>Clubes</span><span>Fábricas y manufactura</span><span>Logística compleja</span>
+    </div>
+  </div>
+</div></section>
+
+<section id="cotizador"><div class="wrap">
+  <p class="tag rv"><i></i>Cotizador</p>
+  <h2 class="rv">Arma tu sistema en 20 segundos.</h2>
+  <p class="lede rv">Selecciona tu caso y recibe tu configuración lista para enviar por WhatsApp.</p>
+  <div class="quote rv">
+    <div>
+      <div class="qg"><b>Tipo de solución</b><div class="chips" id="qtipo">
+        <button class="chip" data-v="Inventario">Inventario</button>
+        <button class="chip" data-v="Facturación/POS">Facturación / POS</button>
+        <button class="chip" data-v="Restaurante">Restaurante</button>
+        <button class="chip" data-v="Automatizaciones">Automatizaciones</button>
+        <button class="chip" data-v="Lectores de Código de Barras / Hardware en tienda">Lectores de Código de Barras / Hardware en tienda</button>
+        <button class="chip" id="chipOtro" data-v="Sistema 100% Personalizado / Otro flujo">Sistema 100% Personalizado / Otro flujo</button>
+      </div>
+      <input class="scan-in" id="qOtroTxt" style="display:none;width:100%;margin-top:10px;height:44px" placeholder="Cuéntanos brevemente qué necesitas…">
+      </div>
+      <div class="qg"><b>Alcance</b><div class="chips" id="qalcance">
+        <button class="chip" data-v="1 sucursal">1 Sucursal</button>
+        <button class="chip" data-v="Multi-sucursal">Multi-sucursal</button>
+        <button class="chip" data-v="Conexión WhatsApp/APIs">Conexión WhatsApp / APIs</button>
+      </div></div>
+    </div>
+    <div class="summary">
+      <b>Tu configuración</b>
+      <ul id="slist"><li class="ph">Selecciona al menos una opción arriba</li></ul>
+      <a class="btn p" id="qbtn" target="_blank" rel="noopener" disabled>Enviar esta configuración a WhatsApp</a>
+    </div>
+  </div>
+</div></section>
+</main>
+
+<footer><div class="wrap">
+  <div class="fgrid">
+    <a class="fbrand" href="#"><span id="logo-f"></span>TORK</a>
+    <div class="flinks">
+      <a class="btn sm" href="https://wa.me/584126446562?text=Hola%20tork,%20quiero%20cotizar%20un%20sistema%20a%20medida" target="_blank" rel="noopener">WhatsApp ventas · +58 412-6446562</a>
+      <a class="btn sm" href="https://wa.me/584121138154" target="_blank" rel="noopener">WhatsApp soporte · +58 412-1138154</a>
+    </div>
+    <div class="status"><span class="dot"></span>Disponibilidad para nuevos proyectos: Abierta</div>
+  </div>
+  <div class="fbottom"><span>© 2026 tork · Crafted for real operations.</span><span>Secaucus → Latam, remoto</span></div>
+</div></footer>
+
+<script>
+/* ---- Logo cactus ---- */
+const PADS=['M610 298C540 280 490 230 497 180C500 130 545 108 580 115C625 125 640 175 645 225C650 262 670 272 700 265C745 255 775 225 765 190C758 165 725 160 705 175C688 190 681 215 683 233',
+'M583 472C560 430 565 380 592 345C622 297 690 287 724 330C752 370 725 440 648 492M610 490L648 494'];
+const SWOOSH=['M472 428C520 500 600 520 690 518C740 518 775 505 792 486','M502 487C550 530 650 560 750 532','M537 541C580 575 660 595 714 571'];
+const SPINES=['M561 98L573 58','M488 147L463 120','M484 190L448 218','M510 300L527 277','M790 208L818 228','M772 155L805 142','M727 123L740 148','M545 350L578 355','M752 332L783 325','M752 400L780 420'];
+const TIPS=[[573,58],[463,120],[448,218],[818,228],[805,142],[740,148],[783,325],[780,420]];
+function cactus(sw,cls){
+  const p=(d,w,c,t)=>`<path class="d ${c}" pathLength="1" d="${d}" style="--t:${t}s;stroke-width:${w}"/>`;
+  let h=`<svg class="logo ${cls}" viewBox="436 48 392 560" role="img" aria-label="Logo de tork: un cactus dibujado con líneas"><g>`;
+  h+=`<g class="pad">${p(PADS[0],sw,'',0)}</g><g class="pad pad2">${p(PADS[1],sw*.9,'',.3)}</g>`;
+  SWOOSH.forEach((d,i)=>h+=p(d,sw*(.8-i*.12),'',.65+i*.12));
+  SPINES.forEach((d,i)=>h+=p(d,7,'s',.85+i*.06));
+  h+=`<path class="hl" pathLength="1" d="${PADS[0]}"/>`;
+  TIPS.forEach(([x,y],i)=>h+=`<circle class="nd" cx="${x}" cy="${y}" r="3.6" style="--n:${i*.35}s"/>`);
+  return h+'</g></svg>';
+}
+function mount(id,sw,cls){const el=document.getElementById(id);el.innerHTML=cactus(sw,cls);const svg=el.firstElementChild;setTimeout(()=>svg.classList.add('alive'),1900);return svg;}
+const small=mount('logo-s',22,'logo-small'); mount('logo-f',22,'logo-small');
+const big=mount('logo-b',17,'');
+function pulseLogo(){big.classList.remove('ping');void big.getBoundingClientRect();big.classList.add('ping')}
+big.addEventListener('pointerenter',pulseLogo);
+big.addEventListener('animationend',e=>{if(e.animationName==='pingS')big.classList.remove('ping')});
+const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+if(!reduce)setInterval(pulseLogo,7000);
+
+/* ---- Iconos SVG inline ---- */
+function ico(path,vb='0 0 24 24'){return `<svg class="mi" viewBox="${vb}" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">${path}</svg>`;}
+const ICN={
+ scan:ico('<path d="M4 8V5a1 1 0 0 1 1-1h3"/><path d="M4 16v3a1 1 0 0 0 1 1h3"/><path d="M20 8V5a1 1 0 0 0-1-1h-3"/><path d="M20 16v3a1 1 0 0 1-1 1h-3"/><rect x="9" y="9" width="6" height="6" rx="1"/>'),
+ printer:ico('<path d="M6 9V3h12v6"/><rect x="4" y="9" width="16" height="8" rx="1"/><path d="M6 17v4h12v-4"/>'),
+ store:ico('<path d="M3 9l1-5h16l1 5"/><path d="M4 9v10h16V9"/><path d="M9 19v-5h6v5"/>'),
+ phone:ico('<rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/>'),
+ scale:ico('<path d="M12 3v3M4 7h16"/><path d="M7 7l-3 7a3 3 0 0 0 6 0l-3-7z"/><path d="M17 7l-3 7a3 3 0 0 0 6 0l-3-7z"/><path d="M8 21h8M12 10v11"/>'),
+ zap:ico('<path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/>'),
+ chart:ico('<path d="M3 3v18h18"/><rect x="7" y="13" width="3" height="5"/><rect x="12" y="9" width="3" height="9"/><rect x="17" y="5" width="3" height="13"/>'),
+ bot:ico('<rect x="4" y="9" width="16" height="10" rx="2"/><path d="M12 9V5M9 3h6"/><circle cx="9" cy="14" r="1"/><circle cx="15" cy="14" r="1"/>'),
+ sync:ico('<path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/>'),
+ cart:ico('<path d="M3 3h2l2.4 12.4a2 2 0 0 0 2 1.6h7.2a2 2 0 0 0 2-1.6L21 8H6"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/>'),
+ gear:ico('<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/>'),
+ chat:ico('<path d="M4 4h16v12H9l-5 4z" stroke-linejoin="round"/>'),
+ check:ico('<circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/>')
+};
+/* ---- Marquee ---- */
+const MITEMS=[[ICN.scan,'Lectores de Código de Barras &amp; QR (Webcam / USB / Bluetooth)'],[ICN.printer,'Impresoras Térmicas de Tickets (ESC/POS)'],[ICN.store,'Control Multi-Sucursal y Depósitos'],[ICN.phone,'Aplicaciones Web Progresivas (PWA) para celulares'],[ICN.scale,'Integración con Básculas y Sensores'],[ICN.zap,'Modo Offline (trabaja sin internet y sincroniza después)'],[ICN.chart,'Reportes Financieros y Métricas a Medida'],[ICN.bot,'Bots de WhatsApp con Inteligencia Artificial'],[ICN.sync,'Migración de datos desde Excel antiguos']];
+const mtrack=document.getElementById('mtrack');
+const mrow=MITEMS.map(([i,t])=>`<span>${i}${t}</span>`).join('<span style="color:var(--line)">/</span>');
+mtrack.innerHTML=mrow+mrow;
+
+/* ---- Nav pill ---- */
+const nav=document.getElementById('nav'),pill=document.getElementById('pill');
+nav.querySelectorAll('a').forEach(a=>a.addEventListener('pointerenter',()=>{pill.style.opacity=1;pill.style.transform=`translateX(${a.offsetLeft}px) scaleX(${a.offsetWidth/112})`}));
+nav.addEventListener('pointerleave',()=>pill.style.opacity=0);
+
+/* ---- Reveal on scroll ---- */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target)}}),{threshold:.15,rootMargin:'0px 0px -60px 0px'});
+document.querySelectorAll('.rv').forEach((el,i)=>{el.style.transitionDelay=(i%4*60)+'ms';io.observe(el)});
+const steps=[...document.querySelectorAll('.step')];
+const sio=new IntersectionObserver(es=>es.forEach(e=>e.target.classList.toggle('on',e.isIntersecting)),{threshold:.6});
+steps.forEach(s=>sio.observe(s));
+
+/* ---- Hero dashboard ---- */
+const items=[{n:'Rodamiento 6204',q:128,min:40,max:200},{n:'Filtro hidráulico',q:64,min:30,max:120},{n:'Sello FKM 32',q:52,min:25,max:100},{n:'Sensor de presión',q:36,min:20,max:80}];
+const rowsEl=document.getElementById('rows');
+rowsEl.innerHTML=items.map((it,i)=>`<div class="row" id="r${i}"><span>${it.n}</span><span class="q">0</span><div class="track"><div class="fill"></div></div></div>`).join('');
+function tween(el,from,to,ms=450){if(reduce||from===to){el.textContent=to;return}const t0=performance.now();(function f(t){const k=Math.min(1,(t-t0)/ms),e=1-Math.pow(1-k,3);el.textContent=Math.round(from+(to-from)*e);if(k<1)requestAnimationFrame(f)})(t0);}
+let moves=0,shown={k1:0,k2:0,k3:0};
+function setK(id,v){tween(document.getElementById(id),shown[id],v);shown[id]=v}
+function render(){items.forEach((it,i)=>{const r=document.getElementById('r'+i),q=r.querySelector('.q');tween(q,+q.textContent||0,it.q);r.querySelector('.fill').style.transform=`scaleX(${it.q/it.max})`;r.classList.toggle('low',it.q<=it.min);});
+  const low=items.filter(i=>i.q<=i.min);setK('k1',items.reduce((s,i)=>s+i.q,0));setK('k2',low.length);setK('k3',moves);
+  document.getElementById('amsg').textContent=low.length?`Reponer: ${low[0].n} (mín. ${low[0].min})`:'Todo sobre el mínimo';}
+render();moves=0;
+let tick=0;
+setInterval(()=>{if(document.hidden)return;tick++;moves++;const it=items[tick%items.length];
+  if(it.q<=it.min+4&&tick%2===0)it.q=Math.min(it.max,it.q+Math.round(it.max*.5));else it.q=Math.max(4,it.q-(8+Math.round(Math.random()*14)));
+  render();},2600);
+
+/* ---- Bento: Inventario ---- */
+const WH=['Bodega Norte','Bodega Sur','Tienda Centro'];
+const stockData={ 'Bodega Norte':[['Tornillería',72],['Cableado',34],['Empaques',58]],
+  'Bodega Sur':[['Tornillería',21],['Cableado',66],['Empaques',12]],
+  'Tienda Centro':[['Tornillería',90],['Cableado',48],['Empaques',75]] };
+let curWH='Bodega Norte';
+const whsel=document.getElementById('whsel');
+whsel.innerHTML=WH.map(w=>`<button class="${w===curWH?'on':''}" data-w="${w}">${w}</button>`).join('');
+function drawStock(){document.getElementById('stocklist').innerHTML=stockData[curWH].map(([n,q])=>`<div class="stock-row ${q<30?'low':''}"><span class="lbl">${n}</span><div class="sbar"><i style="transform:scaleX(${q/100})"></i></div><span class="n">${q}%</span></div>`).join('');}
+whsel.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;curWH=b.dataset.w;[...whsel.children].forEach(c=>c.classList.toggle('on',c===b));drawStock();});
+drawStock();
+
+/* ---- Bento: Ticket ---- */
+const TICKET=[['Mantenimiento preventivo',18],['Repuesto sensor x2',44],['Mano de obra',30]];
+function buildTicket(){
+  const t=document.getElementById('ticket');
+  let total=0;
+  t.innerHTML=TICKET.map(([n,p],i)=>{total+=p;return `<div class="tline" style="animation-delay:${i*140}ms"><span>${n}</span><span>$${p.toFixed(2)}</span></div>`}).join('')
+   + `<div class="ttot"><span>Total</span><span>$${total.toFixed(2)}</span></div>`
+   + `<div class="cuadre"><span class="chk" id="chk"><svg viewBox="0 0 10 10"><path d="M1 5l3 3 5-6" stroke="#8ad65f" stroke-width="1.6" fill="none"/></svg></span><span>Cuadre de caja automático</span></div>`;
+  setTimeout(()=>document.getElementById('chk')?.classList.add('on'),TICKET.length*140+300);
+}
+buildTicket();
+setInterval(()=>{ if(!document.hidden) buildTicket(); },5200);
+
+/* ---- Bento: Restaurante ---- */
+const tablesEl=document.getElementById('tables'),ordersEl=document.getElementById('orders');
+let tableState=[0,1,1,0,1,0,1,1,0,0];
+let orderState=[{m:'Mesa 3',s:0},{m:'Mesa 7',s:1},{m:'Mesa 2',s:0}];
+function drawTables(){tablesEl.innerHTML=tableState.map(t=>`<div class="tbl ${t?'busy':'free'}"></div>`).join('');}
+function drawOrders(){ordersEl.innerHTML=orderState.map(o=>`<div class="ord"><span>${o.m}</span><span class="badge ${o.s?'ready':''}">${o.s?'Listo':'En preparación'}</span></div>`).join('');}
+drawTables();drawOrders();
+setInterval(()=>{if(document.hidden)return;
+  tableState=tableState.map(t=>Math.random()<.18?1-t:t);drawTables();
+  orderState=orderState.map(o=>({...o,s:Math.random()<.5?1-o.s:o.s}));drawOrders();
+},3400);
+
+/* ---- Bento: flujo WhatsApp ---- */
+const flowEl=document.getElementById('flow');
+const NODES=[{i:ICN.cart,l:'Pedido'},{i:ICN.gear,l:'Webhook'},{i:ICN.chat,l:'WhatsApp'},{i:ICN.check,l:'Confirmado'}];
+flowEl.innerHTML=NODES.map((n,i)=>(i>0?`<div class="wire" data-w="${i-1}"><b></b></div>`:'')+`<div class="node" data-n="${i}"><i>${n.i}</i>${n.l}</div>`).join('');
+const wires=[...flowEl.querySelectorAll('.wire')],nodes=[...flowEl.querySelectorAll('.node')];
+function pulse(){
+  nodes.forEach(n=>n.classList.remove('hit'));
+  let i=0;
+  function step(){
+    if(i>0){const w=wires[i-1],dot=w.querySelector('b');
+      if(!reduce){dot.style.transition='none';dot.style.left='0%';dot.style.opacity=1;void dot.getBoundingClientRect();dot.style.transition=`left 520ms var(--ease-io)`;dot.style.left='100%';}
+    }
+    setTimeout(()=>{nodes[i].classList.add('hit');if(i>0)wires[i-1].querySelector('b').style.opacity=0;i++;if(i<nodes.length)step();},i>0?560:0);
+  }
+  step();
+}
+pulse();setInterval(()=>{if(!document.hidden)pulse();},4600);
+
+/* ---- Bento: escaneo de hardware ---- */
+const SCAN_SKUS=[['Filtro de aceite 2.0T',1,18.50],['Pastillas de freno delanteras',1,32.00],['Bombillo LED H7',2,9.90],['Correa de distribución',1,44.75]];
+let scanCart=[],scanI=0,scanAudio;
+function beepSound(){
+  try{
+    const Ctx=window.AudioContext||window.webkitAudioContext;if(!Ctx)return;
+    scanAudio=scanAudio||new Ctx();
+    const o=scanAudio.createOscillator(),g=scanAudio.createGain();
+    o.type='sine';o.frequency.value=1180;g.gain.value=0.001;
+    o.connect(g);g.connect(scanAudio.destination);
+    const t=scanAudio.currentTime;
+    g.gain.exponentialRampToValueAtTime(0.06,t+0.01);g.gain.exponentialRampToValueAtTime(0.0001,t+0.12);
+    o.start(t);o.stop(t+0.13);
+  }catch(e){}
+}
+document.getElementById('scanBtn').addEventListener('click',()=>{
+  const code=document.getElementById('scanIn').value.trim()||'128-000000';
+  const fx=document.getElementById('scanFx'),beep=document.getElementById('beep');
+  fx.classList.remove('go');void fx.offsetWidth;fx.classList.add('go');
+  beep.classList.remove('on');void beep.offsetWidth;beep.classList.add('on');
+  beepSound();
+  const item=SCAN_SKUS[scanI%SCAN_SKUS.length];scanI++;
+  scanCart.push(item);
+  const cart=document.getElementById('cart');
+  cart.innerHTML=scanCart.map(([n,q,p],i)=>`<li style="animation-delay:${i<scanCart.length-1?'0ms':'40ms'}"><span>${n} ×${q}</span><span>$${(p*q).toFixed(2)}</span></li>`).join('')
+    +`<li style="opacity:1;animation:none;border-top:1px dashed var(--line);padding-top:6px;margin-top:2px;font-weight:700;color:var(--accent)"><span>Total</span><span>$${scanCart.reduce((s,[,q,p])=>s+q*p,0).toFixed(2)}</span></li>`;
+  const nextCode=1280000+Math.round(Math.random()*90000);
+  document.getElementById('scanIn').value=`128-${nextCode}-XK`;
+});
+
+/* ---- Cotizador ---- */
+const sel={tipo:new Set(),alcance:new Set()};
+const otroTxt=document.getElementById('qOtroTxt'),chipOtro=document.getElementById('chipOtro');
+function bindChips(id,key){document.getElementById(id).addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;const v=b.dataset.v;
+  if(sel[key].has(v)){sel[key].delete(v);b.classList.remove('on')}else{sel[key].add(v);b.classList.add('on')}
+  if(b===chipOtro){otroTxt.style.display=sel.tipo.has(v)?'block':'none';if(sel.tipo.has(v))otroTxt.focus();}
+  updateQuote();});}
+bindChips('qtipo','tipo');bindChips('qalcance','alcance');
+otroTxt.addEventListener('input',updateQuote);
+const slist=document.getElementById('slist'),qbtn=document.getElementById('qbtn');
+function updateQuote(){
+  const all=[...sel.tipo,...sel.alcance];
+  const free=otroTxt.style.display!=='none'?otroTxt.value.trim():'';
+  if(!all.length){slist.innerHTML='<li class="ph">Selecciona al menos una opción arriba</li>';qbtn.setAttribute('disabled','');qbtn.removeAttribute('href');return;}
+  slist.innerHTML=all.map((v,i)=>`<li style="animation-delay:${i*70}ms">${v}</li>`).join('')+(free?`<li style="animation-delay:${all.length*70}ms">"${free}"</li>`:'');
+  qbtn.removeAttribute('disabled');
+  let msg=`Hola tork, quiero cotizar un sistema con esta configuración:\n- Solución: ${[...sel.tipo].join(', ')||'—'}\n- Alcance: ${[...sel.alcance].join(', ')||'—'}`;
+  if(free)msg+=`\n- Detalle del flujo: ${free}`;
+  qbtn.href=`https://wa.me/584126446562?text=${encodeURIComponent(msg)}`;
+}
+updateQuote();
+</script>
+</body>
+</html>
